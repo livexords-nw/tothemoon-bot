@@ -1,7 +1,7 @@
 
 # POP To The Moon Bot
 
-Register : https://t.me/PoPPtothemoon_bot/moon?startapp=1655874127
+Register : https://t.me/PoPPtothemoon_bot/moon?startapp=7795589971
 
 
 ## Installation
@@ -11,10 +11,9 @@ Register : https://t.me/PoPPtothemoon_bot/moon?startapp=1655874127
 
 2. **Install Module**
    - Buka command prompt atau terminal, lalu jalankan perintah:
-     ```
-     pip install requests colorama
-     ```
-   - Ini akan menginstal dua modul yang diperlukan: `requests` untuk melakukan permintaan HTTP dan `colorama` untuk memberi warna teks di konsol.
+      ```
+      pip install -r requirements.txt
+      ```
 
 3. **Buka Bot POP To The Moon di PC (Telegram Web / Desktop)**
    - Buka Telegram Web atau Telegram Desktop di PC kamu.
@@ -30,10 +29,10 @@ Register : https://t.me/PoPPtothemoon_bot/moon?startapp=1655874127
    - Buat atau buka file `query.txt` dan paste nilai `query_id` atau `user=xxx` yang telah kamu ambil sebelumnya.
   
 ## Features
-- Auto Claim Farming
+- Auto Farming
 - Auto Explore Planet
-- Auto Claim Reff Reward
-- Auto Task (SOON)
+- Auto Claim Achivement
+- Auto Task 
 - Auto Daily Check-in
 - Multi Account
 - Loop based on the account with the fastest claim time 
