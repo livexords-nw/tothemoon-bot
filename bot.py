@@ -97,8 +97,8 @@ class MoonBot:
         start_farming_url = "https://moon.popp.club/moon/farming"
         claim_farming_url = "https://moon.popp.club/moon/claim/farming"
 
-        if self.send_request(start_farming_url, headers, "successfully started farming.", "failed to start farming"):
-            return self.send_request(claim_farming_url, headers, "Successfully claimed farming results.", "failed to claim farming results")
+        if self.send_request(claim_farming_url, headers, "successfully claim farming.", "failed to claim farming"):
+            return self.send_request(start_farming_url, headers, "Successfully started farming results.", "failed to start farming results")
         return False
 
     def send_request(self, url, headers, success_message, failure_message):
