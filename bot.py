@@ -16,13 +16,13 @@ class Display:
     def welcome_message():
         print(
             r"""
-                ██╗     ██╗██╗   ██╗███████╗██╗  ██╗ ██████╗ ██████╗ ██████╗ ███████╗
-                ██║     ██║██║   ██║██╔════╝╚██╗██╔╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝
-                ██║     ██║██║   ██║█████╗   ╚███╔╝ ██║   ██║██████╔╝██║  ██║███████╗
-                ██║     ██║╚██╗ ██╔╝██╔══╝   ██╔██╗ ██║   ██║██╔══██╗██║  ██║╚════██║
-                ███████╗██║ ╚████╔╝ ███████╗██╔╝ ██╗╚██████╔╝██║  ██║██████╔╝███████║
-                ╚══════╝╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝ ╚══════╝
-                                                                                    
+██╗     ██╗██╗   ██╗███████╗██╗  ██╗ ██████╗ ██████╗ ██████╗ ███████╗
+██║     ██║██║   ██║██╔════╝╚██╗██╔╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝
+██║     ██║██║   ██║█████╗   ╚███╔╝ ██║   ██║██████╔╝██║  ██║███████╗
+██║     ██║╚██╗ ██╔╝██╔══╝   ██╔██╗ ██║   ██║██╔══██╗██║  ██║╚════██║
+███████╗██║ ╚████╔╝ ███████╗██╔╝ ██╗╚██████╔╝██║  ██║██████╔╝███████║
+╚══════╝╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝ ╚══════╝
+                                                                    
         """
         )
         print(Fore.GREEN + Style.BRIGHT + "Free POP To The MOON Airdrop BOT")
@@ -92,7 +92,7 @@ class MoonBot:
             MoonBot.print_(color=Fore.RED, message="Token not found")
             return False
 
-        MoonBot.print_(color=Fore.BLUE, message="======= Attempting to claim farming rewards =======")
+        MoonBot.print_(color=Fore.YELLOW, message="======= Attempting to claim farming rewards =======")
         headers = {"Authorization": self.token, **self.common_headers}
         start_farming_url = "https://moon.popp.club/moon/farming"
         claim_farming_url = "https://moon.popp.club/moon/claim/farming"
@@ -114,7 +114,7 @@ class MoonBot:
     def explore_planets(self):
         """Initiates exploration for each planet."""
         if self.token:
-            MoonBot.print_(color=Fore.BLUE, message="======= Attempting to claim farming rewards =======")
+            MoonBot.print_(color=Fore.YELLOW, message="======= Attempting to claim farming rewards =======")
             asset_data = self.get_asset_data()
             if asset_data:
                 probe = asset_data.get("data", {}).get("probe", 0)
@@ -160,7 +160,7 @@ class MoonBot:
                 MoonBot.print_(color=Fore.RED, message="Token not found")
 
 
-    # Achivment Function
+    # Achievement Function
     def get_and_send_achievements(self):
         if not self.token:
             return
@@ -177,38 +177,45 @@ class MoonBot:
                 MoonBot.print_(color=Fore.RED, message="Response JSON does not contain 'data' key")
                 return
 
-            tasks = data["data"]
+            achievement = data["data"]
+
+            awards_info = []
 
             def extract_and_send_names(data):
                 if isinstance(data, dict):
                     achievement_name = data.get("name")
-                    if achievement_name:
-                        send_achievement_request(achievement_name)
+                    award = data.get("award")
 
-                    # Recurse into the dictionary values
+                    if isinstance(award, dict):
+                        award_amount = award.get("amount")
+                        award_name = award.get("award")
+
+                        if achievement_name and award_amount is not None:
+                            awards_info.append((achievement_name, award_amount, award_name))
+                            send_achievement_request(achievement_name, award_amount, award_name)
+
                     for value in data.values():
                         extract_and_send_names(value)
                 elif isinstance(data, list):
-                    # Recurse into each item in the list
                     for item in data:
                         extract_and_send_names(item)
 
-            def send_achievement_request(achievement_name):
+            def send_achievement_request(achievement_name, award_amount, award_name):
                 try:
                     check_url = f"https://moon.popp.club/moon/achievement/check?achievementName={achievement_name}"
                     check_response = requests.get(check_url, headers=headers)
                     check_response.raise_for_status()
-                    MoonBot.print_(color=Fore.BLUE, message=f"{Fore.YELLOW} Sent request for achievement: {achievement_name}, {Fore.GREEN}Status: {check_response.status_code}")
+                    MoonBot.print_(color=Fore.BLUE, message=f"{Fore.YELLOW} Sent request for achievement and claim: {Fore.WHITE}{achievement_name}{Fore.YELLOW} | Amount: {Fore.MAGENTA}{award_amount}{Fore.YELLOW} | Award: {Fore.GREEN}{award_name}{Fore.YELLOW} | Status: {Fore.GREEN}{check_response.status_code}")
                 except requests.exceptions.RequestException as e:
                     MoonBot.print_(color=Fore.RED, message=f"Failed to send request for {achievement_name}: {e}")
 
-            # Start the extraction and request sending process
-            extract_and_send_names(tasks)
+            extract_and_send_names(achievement)
 
         except requests.exceptions.RequestException as e:
             MoonBot.print_(color=Fore.RED, message=f"Request failed: {e}")
         except ValueError:
             MoonBot.print_(color=Fore.RED, message="Failed to decode JSON from response")
+
 
     # Task Function
     def get_tasks(self):
@@ -228,7 +235,20 @@ class MoonBot:
                 return []
 
             tasks = data["data"]
-            return [task["taskId"] for task in tasks]
+            task_details = []
+            for task in tasks:
+                task_id = task["taskId"]
+                name = task.get("name", "N/A") 
+                award_amount = task.get("award", {}).get("amount", "N/A")
+                award_name = task.get("award", {}).get("award", "N/A")  
+                
+                task_details.append({
+                    "taskId": task_id,
+                    "name": name,
+                    "amount": award_amount,
+                    "award": award_name
+                })
+            return task_details
 
         except requests.exceptions.RequestException as e:
             MoonBot.print_(color=Fore.RED, message=f"Request failed: {e}")
@@ -237,7 +257,7 @@ class MoonBot:
 
         return []
     
-    def complete_task(self, task_id):
+    def complete_task(self, task_id, task_name, task_amount, task_award):
         """Starts and claims a task by task ID."""
         if not self.token:
             MoonBot.print_(color=Fore.RED, message="Token not found")
@@ -246,13 +266,13 @@ class MoonBot:
         headers = {**self.common_headers, "Authorization": self.token}
         
         # Start Task
-        if not self._start_task(task_id, headers):
+        if not self._start_task(task_id, headers, task_name, task_amount, task_award):
             return False
 
         # Claim Task
-        return self._claim_task(task_id, headers)
+        return self._claim_task(task_id, headers, task_name, task_amount, task_award)
 
-    def _start_task(self, task_id, headers):
+    def _start_task(self, task_id, headers, task_name, task_amount, task_award):
         """Starts the task and handles any request errors."""
         task_url = f"https://moon.popp.club/moon/task/visit/ss?taskId={task_id}"
         payload = {"taskId": task_id}
@@ -260,17 +280,17 @@ class MoonBot:
         try:
             response_task = requests.post(task_url, headers=headers, json=payload)
             response_task.raise_for_status()
-            MoonBot.print_(color=Fore.GREEN, message=f"Successfully started task with ID: {task_id}")
+            MoonBot.print_(color=Fore.BLUE, message=f"Successfully started task: {Fore.WHITE}{task_name}{Fore.YELLOW} | Status: {Fore.GREEN}{response_task.status_code}")
             return True
 
         except requests.exceptions.RequestException as e:
-            MoonBot.print_(color=Fore.RED, message=f"Failed to start task with ID: {task_id}. Request error: {e}")
+            MoonBot.print_(color=Fore.RED, message=f"Failed to start task : {task_name}. Request error: {e}")
         except ValueError:
             MoonBot.print_(color=Fore.RED, message=f"Failed to decode JSON for start task response: {response_task.text}")
         
         return False
 
-    def _claim_task(self, task_id, headers):
+    def _claim_task(self, task_id, headers, task_name, task_amount, task_award):
         """Claims the task and handles any request errors."""
         claim_url = f"https://moon.popp.club/moon/task/claim?taskId={task_id}"
 
@@ -279,11 +299,11 @@ class MoonBot:
             response_claim.raise_for_status()
             
             if response_claim.status_code == 200:
-                MoonBot.print_(color=Fore.GREEN, message=f"Successfully claimed task with ID: {task_id}")
+                MoonBot.print_(color=Fore.BLUE, message=f"{Fore.YELLOW}Successfully claimed task: {Fore.WHITE}{task_name}{Fore.YELLOW} | Amount: {Fore.MAGENTA}{task_amount}{Fore.YELLOW} | Award: {Fore.GREEN}{task_award}{Fore.YELLOW} | Status: {Fore.GREEN}{response_claim.status_code}")
                 return True
 
         except requests.exceptions.RequestException as e:
-            MoonBot.print_(color=Fore.RED, message=f"Failed to claim task with ID: {task_id}. Request error: {e}")
+            MoonBot.print_(color=Fore.RED, message=f"Failed to claim task : {Fore.WHITE}{task_name}{Fore.RED}. Request error: {e}")
         except ValueError:
             MoonBot.print_(color=Fore.RED, message=f"Failed to decode JSON for claim task response: {response_claim.text}")
 
@@ -363,21 +383,20 @@ class AccountProcessor:
 
     def claim_achievements(self, bot):
         """Claims achievements for an account."""
-        MoonBot.print_(color=Fore.BLUE, message="======= Claimed Achievements =======")
+        MoonBot.print_(color=Fore.YELLOW, message="======= Claimed Achievements =======")
         bot.get_and_send_achievements()
         time.sleep(2)
 
     def complete_tasks(self, bot):
         """Retrieves and completes tasks for an account."""
-        MoonBot.print_(color=Fore.BLUE, message="======= Claimed Tasks =======")
-        task_ids = bot.get_tasks()
-        for task_id in task_ids:
-            success_message = f"Successfully completed the task with ID: {task_id}"
-            failure_message = f"Failed to complete the task with ID: {task_id}"
-            if bot.complete_task(task_id):
-                MoonBot.print_(color=Fore.GREEN, message=success_message)
-            else:
-                MoonBot.print_(color=Fore.RED, message=failure_message)
+        MoonBot.print_(color=Fore.YELLOW, message="======= Claimed Tasks =======")
+        tasks = bot.get_tasks()
+        for task in tasks:
+            task_id = task["taskId"]
+            name = task.get("name")
+            award_name = task.get("award")
+            award_amount = task.get("amount")
+            bot.complete_task(task_id,name,award_amount,award_name)
         time.sleep(2)
 
     @staticmethod
@@ -392,6 +411,7 @@ class AccountProcessor:
         hours, minutes, seconds = AccountProcessor.convert_ms_to_time(remaining_time_ms)
 
         # Display asset details
+        MoonBot.print_(color=Fore.YELLOW, message="========= Status =========")
         MoonBot.print_(color=Fore.BLUE, message=f"{Fore.CYAN}[SD]: {Fore.MAGENTA}{sd}{Style.RESET_ALL}")
         MoonBot.print_(color=Fore.BLUE, message=f"{Fore.CYAN}[Probe]: {Fore.MAGENTA}{probe}{Style.RESET_ALL}")
         MoonBot.print_(color=Fore.BLUE, message=f"{Fore.CYAN}[ETH]: {Fore.MAGENTA}{eth}{Style.RESET_ALL}")
@@ -423,7 +443,7 @@ def main():
     processor = AccountProcessor("query.txt")
     while True:
         processor.process_all_accounts()
-        MoonBot.print_(color=Fore.GREEN,message="====== All accounts processed ======")
+        MoonBot.print_(color=Fore.YELLOW,message="====== All accounts processed ======")
         MoonBot.print_(color=Fore.CYAN,message="Waiting 10 minutes before re-processing...")
         time.sleep(600)
 
