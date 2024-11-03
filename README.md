@@ -1,5 +1,5 @@
 
-# POP To The Moon Bots
+# POP To The Moon Bot
 
 Register : https://t.me/PoPPtothemoon_bot/moon?startapp=7795589971
 
