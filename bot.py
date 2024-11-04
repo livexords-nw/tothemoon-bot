@@ -36,7 +36,7 @@ class MoonBot:
     
     def print_(message):
         timestamp = datetime.now().strftime("[%Y-%m-%d %H:%M:%S] |")
-        print(Fore.BLACK + timestamp + " " + message + Fore.RESET)
+        print(Fore.LIGHTBLACK_EX + timestamp + " " + message + Fore.RESET)
 
     def load_config():
         """Load the configuration from config.json once at the start."""
@@ -290,7 +290,7 @@ class MoonBot:
             response_claim.raise_for_status()
             
             if response_claim.status_code == 200:
-                MoonBot.print_(message=f"{Fore.YELLOW}Successfully claimed task: {Fore.WHITE}{task_name}{Fore.YELLOW} | Amount: {Fore.MAGENTA}{task_amount}{Fore.YELLOW} | Award: {Fore.GREEN}{task_award}{Fore.YELLOW}")
+                MoonBot.print_(message=f"{Fore.GREEN}{task_name}{Fore.YELLOW} | Amount: {Fore.MAGENTA}{task_amount}{Fore.YELLOW} | Award: {Fore.GREEN}{task_award}{Fore.YELLOW}")
                 return True
 
         except requests.exceptions.RequestException as e:
