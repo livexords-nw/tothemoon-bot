@@ -81,7 +81,7 @@ class MoonBot:
 
     def get_asset_data(self):
         if self.token:
-            asset_url = "https://moon.popp.club/moon/asset"
+            asset_url = "https://moon.popp.club/asset/info"
             headers = {**self.common_headers, "Authorization": self.token}
             response = requests.get(asset_url, headers=headers)
             return response.json() if response.status_code == 200 else None
@@ -136,10 +136,15 @@ class MoonBot:
                             if explorer_response.status_code == 200:
                                 explore_data = explorer_response.json().get("data", {})
 
-                                award_data = explore_data.get("award", [{}])
-                                award = award_data[0].get("award", "N/A") if award_data else "N/A"
-                                amount = award_data[0].get("amount", "N/A") if award_data else "N/A"
-
+                                if explore_data: 
+                                    award_data = explore_data.get("award", [{}])
+                                    award = award_data[0].get("award", "N/A") if award_data else "N/A"
+                                    amount = award_data[0].get("amount", "N/A") if award_data else "N/A"
+                                else:
+                                    MoonBot.print_(color=Fore.RED, message="Error: Explore data is empty.")
+                                    award = "N/A"
+                                    amount = "N/A"
+                                    
                                 MoonBot.print_(
                                     color=Fore.BLUE,
                                     message=f"{Fore.CYAN}Exploration for planet {Fore.MAGENTA}{planet_id}{Style.RESET_ALL}, "

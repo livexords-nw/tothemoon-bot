@@ -4,7 +4,11 @@
 Register : https://t.me/PoPPtothemoon_bot/moon?startapp=7795589971
 
 ## Versi
-   Versi saat ini `v1.0.3`
+   Versi saat ini `v1.0.5`
+
+## Update `1.0.3` -> `1.0.5`
+   1. Membenahi api untuk mendapatkan info akun
+   2. Membenahi handler untuk informasi planet
 
 ## Installation
    - Buka command prompt atau terminal, lalu jalankan perintah:
