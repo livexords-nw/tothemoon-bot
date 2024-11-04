@@ -5,27 +5,14 @@ import json
 import time
 from colorama import init, Fore, Style
 
-# Initialize colorama
 init(autoreset=True)
-
 
 class Display:
     """Handles display functions with color formatting."""
 
     @staticmethod
     def welcome_message():
-        print(
-            r"""
-██╗     ██╗██╗   ██╗███████╗██╗  ██╗ ██████╗ ██████╗ ██████╗ ███████╗
-██║     ██║██║   ██║██╔════╝╚██╗██╔╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝
-██║     ██║██║   ██║█████╗   ╚███╔╝ ██║   ██║██████╔╝██║  ██║███████╗
-██║     ██║╚██╗ ██╔╝██╔══╝   ██╔██╗ ██║   ██║██╔══██╗██║  ██║╚════██║
-███████╗██║ ╚████╔╝ ███████╗██╔╝ ██╗╚██████╔╝██║  ██║██████╔╝███████║
-╚══════╝╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝ ╚══════╝
-                                                                    
-        """
-        )
-        print(Fore.GREEN + Style.BRIGHT + "Free POP To The MOON Airdrop BOT")
+        print("             This bot created by LIVEXORDS\n")
 
 
 class MoonBot:
@@ -47,9 +34,15 @@ class MoonBot:
         self.token = None
         self.user_data = self.parse_user_data(init_data)
     
-    def print_(message, color=Fore.RESET):
-        timestamp = datetime.now().strftime("[%Y:%m:%d:%H:%M:%S] |")
-        print(color + timestamp + " " + message + Fore.RESET)
+    def print_(message):
+        timestamp = datetime.now().strftime("[%Y-%m-%d %H:%M:%S] |")
+        print(Fore.BLACK + timestamp + " " + message + Fore.RESET)
+
+    def load_config():
+        """Load the configuration from config.json once at the start."""
+        with open('config.json') as config_file:
+            config = json.load(config_file)
+        return config
 
     @staticmethod
     def parse_user_data(init_data):
@@ -89,10 +82,9 @@ class MoonBot:
 
     def claim_rewards(self):
         if not self.token:
-            MoonBot.print_(color=Fore.RED, message="Token not found")
+            MoonBot.print_(message=f"{Fore.RED}Token not found")
             return False
 
-        MoonBot.print_(color=Fore.YELLOW, message="======= Attempting to claim farming rewards =======")
         headers = {"Authorization": self.token, **self.common_headers}
         start_farming_url = "https://moon.popp.club/moon/farming"
         claim_farming_url = "https://moon.popp.club/moon/claim/farming"
@@ -105,16 +97,15 @@ class MoonBot:
         try:
             response = requests.get(url, headers=headers)
             response.raise_for_status()
-            MoonBot.print_(color=Fore.GREEN, message=success_message)
+            MoonBot.print_(message=f"{Fore.GREEN}{success_message}")
             return True
         except requests.exceptions.RequestException as e:
-            MoonBot.print_(color=Fore.RED, message=f"{failure_message}: {e}")
+            MoonBot.print_(message=f"{Fore.RED}{failure_message}: {e}")
             return False
 
     def explore_planets(self):
         """Initiates exploration for each planet."""
         if self.token:
-            MoonBot.print_(color=Fore.YELLOW, message="======= Attempting to claim farming rewards =======")
             asset_data = self.get_asset_data()
             if asset_data:
                 probe = asset_data.get("data", {}).get("probe", 0)
@@ -125,10 +116,10 @@ class MoonBot:
                     planets_response = requests.get(planets_url, headers=headers)
                     if planets_response.status_code == 200:
                         planets_data = planets_response.json()
-                        MoonBot.print_(color=Fore.GREEN, message="ID Planet:")
+                        MoonBot.print_(message=f"{Fore.GREEN}ID Planet:")
                         for planet in planets_data.get("data", []):
                             planet_id = planet.get("id", "N/A")
-                            MoonBot.print_(color=Fore.GREEN, message=str(planet_id))
+                            MoonBot.print_(message=f"{Fore.GREEN}{str(planet_id)}")
 
                             explorer_url = f"https://moon.popp.club/moon/explorer?plantId={planet_id}"
                             explorer_response = requests.get(explorer_url, headers=headers)
@@ -141,28 +132,25 @@ class MoonBot:
                                     award = award_data[0].get("award", "N/A") if award_data else "N/A"
                                     amount = award_data[0].get("amount", "N/A") if award_data else "N/A"
                                 else:
-                                    MoonBot.print_(color=Fore.RED, message="Error: Explore data is empty.")
+                                    MoonBot.print_(message=f"{Fore.RED}Error: Explore data is empty.")
                                     award = "N/A"
                                     amount = "N/A"
                                     
                                 MoonBot.print_(
-                                    color=Fore.BLUE,
                                     message=f"{Fore.CYAN}Exploration for planet {Fore.MAGENTA}{planet_id}{Style.RESET_ALL}, "
                                             f"Award: {Fore.MAGENTA}{award}{Style.RESET_ALL}, "
                                             f"Amount: {Fore.MAGENTA}{amount}{Style.RESET_ALL}"
                                 )
                             else:
                                 MoonBot.print_(
-                                    color=Fore.RED,
-                                    message=f"Exploration request for planet {planet_id} failed with status code {explorer_response.status_code}: {explorer_response.text}"
+                                    message=f"{Fore.RED}Exploration request for planet {planet_id} failed with status code {explorer_response.status_code}: {explorer_response.text}"
                                 )
                     else:
                         MoonBot.print_(
-                            color=Fore.RED,
-                            message=f"Planet request failed with status code {planets_response.status_code}: {planets_response.text}"
+                            message=f"{Fore.RED}Planet request failed with status code {planets_response.status_code}: {planets_response.text}"
                         )
             else:
-                MoonBot.print_(color=Fore.RED, message="Token not found")
+                MoonBot.print_(message=f"{Fore.RED}Token not found")
 
 
     # Achievement Function
@@ -179,7 +167,7 @@ class MoonBot:
             data = response.json()
 
             if "data" not in data:
-                MoonBot.print_(color=Fore.RED, message="Response JSON does not contain 'data' key")
+                MoonBot.print_(message=f"{Fore.RED}Response JSON does not contain 'data' key")
                 return
 
             achievement = data["data"]
@@ -210,16 +198,16 @@ class MoonBot:
                     check_url = f"https://moon.popp.club/moon/achievement/check?achievementName={achievement_name}"
                     check_response = requests.get(check_url, headers=headers)
                     check_response.raise_for_status()
-                    MoonBot.print_(color=Fore.BLUE, message=f"{Fore.YELLOW} Sent request for achievement and claim: {Fore.WHITE}{achievement_name}{Fore.YELLOW} | Amount: {Fore.MAGENTA}{award_amount}{Fore.YELLOW} | Award: {Fore.GREEN}{award_name}{Fore.YELLOW} | Status: {Fore.GREEN}{check_response.status_code}")
+                    MoonBot.print_(message=f"{Fore.GREEN}{achievement_name}{Fore.YELLOW} | Amount: {Fore.MAGENTA}{award_amount}{Fore.YELLOW} | Award: {Fore.GREEN}{award_name}{Fore.YELLOW}")
                 except requests.exceptions.RequestException as e:
-                    MoonBot.print_(color=Fore.RED, message=f"Failed to send request for {achievement_name}: {e}")
+                    MoonBot.print_(message=f"{Fore.RED}Failed to send request for {achievement_name}: {e}")
 
             extract_and_send_names(achievement)
 
         except requests.exceptions.RequestException as e:
-            MoonBot.print_(color=Fore.RED, message=f"Request failed: {e}")
+            MoonBot.print_(message=f"{Fore.RED}Request failed: {e}")
         except ValueError:
-            MoonBot.print_(color=Fore.RED, message="Failed to decode JSON from response")
+            MoonBot.print_(message=f"{Fore.RED}Failed to decode JSON from response")
 
 
     # Task Function
@@ -236,7 +224,7 @@ class MoonBot:
             data = response.json()
 
             if "data" not in data:
-                MoonBot.print_(color=Fore.RED, message="Response JSON does not contain 'data' key")
+                MoonBot.print_(message=f"{Fore.RED}Response JSON does not contain 'data' key")
                 return []
 
             tasks = data["data"]
@@ -256,25 +244,23 @@ class MoonBot:
             return task_details
 
         except requests.exceptions.RequestException as e:
-            MoonBot.print_(color=Fore.RED, message=f"Request failed: {e}")
+            MoonBot.print_(message=f"{Fore.RED}Request failed: {e}")
         except ValueError:
-            MoonBot.print_(color=Fore.RED, message="Failed to decode JSON from response")
+            MoonBot.print_(message=f"{Fore.RED}Failed to decode JSON from response")
 
         return []
     
     def complete_task(self, task_id, task_name, task_amount, task_award):
         """Starts and claims a task by task ID."""
         if not self.token:
-            MoonBot.print_(color=Fore.RED, message="Token not found")
+            MoonBot.print_(message=f"{Fore.RED}Token not found")
             return False
 
         headers = {**self.common_headers, "Authorization": self.token}
         
-        # Start Task
         if not self._start_task(task_id, headers, task_name, task_amount, task_award):
             return False
 
-        # Claim Task
         return self._claim_task(task_id, headers, task_name, task_amount, task_award)
 
     def _start_task(self, task_id, headers, task_name, task_amount, task_award):
@@ -285,13 +271,13 @@ class MoonBot:
         try:
             response_task = requests.post(task_url, headers=headers, json=payload)
             response_task.raise_for_status()
-            MoonBot.print_(color=Fore.BLUE, message=f"Successfully started task: {Fore.WHITE}{task_name}{Fore.YELLOW} | Status: {Fore.GREEN}{response_task.status_code}")
+            MoonBot.print_(message=f"{Fore.GREEN}{Fore.WHITE}{task_name}{Fore.YELLOW}")
             return True
 
         except requests.exceptions.RequestException as e:
-            MoonBot.print_(color=Fore.RED, message=f"Failed to start task : {task_name}. Request error: {e}")
+            MoonBot.print_(message=f"{Fore.RED}{task_name}. Request error: {e}")
         except ValueError:
-            MoonBot.print_(color=Fore.RED, message=f"Failed to decode JSON for start task response: {response_task.text}")
+            MoonBot.print_(message=f"{Fore.RED}Failed to decode JSON for start task response: {response_task.text}")
         
         return False
 
@@ -304,14 +290,35 @@ class MoonBot:
             response_claim.raise_for_status()
             
             if response_claim.status_code == 200:
-                MoonBot.print_(color=Fore.BLUE, message=f"{Fore.YELLOW}Successfully claimed task: {Fore.WHITE}{task_name}{Fore.YELLOW} | Amount: {Fore.MAGENTA}{task_amount}{Fore.YELLOW} | Award: {Fore.GREEN}{task_award}{Fore.YELLOW} | Status: {Fore.GREEN}{response_claim.status_code}")
+                MoonBot.print_(message=f"{Fore.YELLOW}Successfully claimed task: {Fore.WHITE}{task_name}{Fore.YELLOW} | Amount: {Fore.MAGENTA}{task_amount}{Fore.YELLOW} | Award: {Fore.GREEN}{task_award}{Fore.YELLOW}")
                 return True
 
         except requests.exceptions.RequestException as e:
-            MoonBot.print_(color=Fore.RED, message=f"Failed to claim task : {Fore.WHITE}{task_name}{Fore.RED}. Request error: {e}")
+            MoonBot.print_(message=f"{Fore.RED}Failed to claim task : {Fore.WHITE}{task_name}{Fore.RED}. Request error: {e}")
         except ValueError:
-            MoonBot.print_(color=Fore.RED, message=f"Failed to decode JSON for claim task response: {response_claim.text}")
+            MoonBot.print_(message=f"{Fore.RED}Failed to decode JSON for claim task response: {response_claim.text}")
 
+        return False
+    
+    # Claim reff
+    def reff(self):
+        """CLaims reff point"""
+        claim_url = f"https://moon.popp.club/moon/claim/invite"
+        headers = {**self.common_headers, "Authorization": self.token}
+
+        try:
+            response = requests.get(claim_url, headers=headers)
+            response.raise_for_status()
+
+            if response.status_code == 200:
+                MoonBot.print_(message=f"{Fore.GREEN}Successfully claim reff")
+                return True
+        
+        except requests.exceptions.RequestException as e:
+            MoonBot.print_(message=f"{Fore.RED}Failed to claim reff. Request error: {e}")
+        except ValueError:
+            MoonBot.print_(message=f"{Fore.RED}Failed to decode JSON for start task response: {response.text}")
+        
         return False
 
 class AccountProcessor:
@@ -330,71 +337,69 @@ class AccountProcessor:
         account_list = self.read_account_data()
         total_accounts = len(account_list)
 
-        MoonBot.print_(message=f"Total Accounts: {total_accounts}\n", color=Fore.GREEN)
+        MoonBot.print_(message=f"{Fore.GREEN}Total Accounts: {total_accounts}\n")
 
         for index, account_data in enumerate(account_list, start=1):
             self.process_single_account(account_data, index, total_accounts)
 
     def process_single_account(self, account_data, index, total_accounts):
         """Processes a single account with actions like login, check-in, asset retrieval, and task completion."""
-        MoonBot.print_(color=Fore.YELLOW, message=f"====== Processing Account {index}/{total_accounts} ======")
+        MoonBot.print_(message=f"{Fore.GREEN}Account: {index}/{total_accounts}")
         bot = MoonBot(account_data)
 
-        # Login
         if not bot.login():
-            MoonBot.print_(color=Fore.RED, message="Failed to log in.")
+            MoonBot.print_(message=f"{Fore.RED}Failed to log in.")
             return
-        MoonBot.print_(color=Fore.GREEN, message=f"Successfully logged in to Account {index}.")
-        time.sleep(10)  # Delay after login
+        MoonBot.print_(message=f"{Fore.GREEN}Successfully logged in to Account {index}.")
 
-        # Check-in
         if bot.check_in():
-            MoonBot.print_(color=Fore.GREEN, message="Check-in completed.")
-        time.sleep(10)  # Delay after check-in
+            MoonBot.print_(message=f"{Fore.GREEN}Check-in completed.")
 
-        # Asset retrieval and operations
         asset_data = bot.get_asset_data()
+        config = MoonBot.load_config()
         if asset_data:
             self.display_asset_data(asset_data, bot)
-            self.claim_achievements(bot)
-            self.complete_tasks(bot)
-            time.sleep(10)  # Delay after asset operations
+            if config["reff"]:
+                self.claim_reff(bot)
+            else:
+                MoonBot.print_(message=f"{Fore.GREEN}Reff: {Fore.RED}Off")
+            if config["achievements"]:
+                self.claim_achievements(bot)
+            else:
+                MoonBot.print_(message=f"{Fore.GREEN}Achievemtns: {Fore.RED}Off")
+            if config["tasks"]:
+                self.complete_tasks(bot)
+            else:
+                MoonBot.print_(message=f"{Fore.GREEN}Tasks: {Fore.RED}Off")
 
-        # Re-check assets after completing tasks
-        bot.check_in()
-        refreshed_asset_data = bot.get_asset_data()
-        if refreshed_asset_data:
-            self.display_asset_data(refreshed_asset_data, bot)
-        time.sleep(10)  # Delay after re-checking assets
-
-        # Final wait before processing the next account
-        MoonBot.print_(color=Fore.YELLOW, message="Waiting for 10 seconds before processing the next account...")
-        time.sleep(10)
+        if index == total_accounts:
+            return
+        
+        MoonBot.print_(message=f"{Fore.WHITE}------------------------------------------------------")
+        MoonBot.print_(message=f"{Fore.YELLOW} Sleep for {config["delay_change_account"]}")
+        time.sleep(config["delay_change_account"])  
 
     def claim_rewards(self, bot):
         """Claims farming rewards for an account."""
         result = bot.claim_rewards()
         if result:
-            MoonBot.print_(color=Fore.GREEN, message="Farming rewards successfully claimed.")
+            MoonBot.print_(message=f"{Fore.GREEN}Farming rewards successfully claimed.")
         else:
-            MoonBot.print_(color=Fore.RED, message="Failed to claim farming rewards.")
-        time.sleep(2)
+            MoonBot.print_(message=f"{Fore.RED}Failed to claim farming rewards.")
 
 
     def explore_planets(self, bot):
         """Initiates planet exploration for an account."""
         bot.explore_planets()
-        time.sleep(2)
 
     def claim_achievements(self, bot):
         """Claims achievements for an account."""
-        MoonBot.print_(color=Fore.YELLOW, message="======= Claimed Achievements =======")
+        MoonBot.print_(message=f"{Fore.GREEN}Achievements: On")
         bot.get_and_send_achievements()
-        time.sleep(2)
 
     def complete_tasks(self, bot):
         """Retrieves and completes tasks for an account."""
-        MoonBot.print_(color=Fore.YELLOW, message="======= Claimed Tasks =======")
+        MoonBot.print_(message=f"{Fore.GREEN}Tasks: On")
         tasks = bot.get_tasks()
         for task in tasks:
             task_id = task["taskId"]
@@ -402,7 +407,11 @@ class AccountProcessor:
             award_name = task.get("award")
             award_amount = task.get("amount")
             bot.complete_task(task_id,name,award_amount,award_name)
-        time.sleep(2)
+    
+    def claim_reff(self, bot):
+        """Claim reff point"""
+        MoonBot.print_(message=f"{Fore.GREEN}Reff: On")
+        bot.reff()
 
     @staticmethod
     def display_asset_data(asset_data, bot):
@@ -415,24 +424,30 @@ class AccountProcessor:
         remaining_time_ms = max(0, data.get("farmingEndTime", 0) - data.get("systemTimestamp", 0))
         hours, minutes, seconds = AccountProcessor.convert_ms_to_time(remaining_time_ms)
 
-        # Display asset details
-        MoonBot.print_(color=Fore.YELLOW, message="========= Status =========")
-        MoonBot.print_(color=Fore.BLUE, message=f"{Fore.CYAN}[SD]: {Fore.MAGENTA}{sd}{Style.RESET_ALL}")
-        MoonBot.print_(color=Fore.BLUE, message=f"{Fore.CYAN}[Probe]: {Fore.MAGENTA}{probe}{Style.RESET_ALL}")
-        MoonBot.print_(color=Fore.BLUE, message=f"{Fore.CYAN}[ETH]: {Fore.MAGENTA}{eth}{Style.RESET_ALL}")
+        MoonBot.print_(message=f"{Fore.GREEN}Status")
+        MoonBot.print_(message=f"{Fore.WHITE}SD: {Fore.MAGENTA}{sd}{Style.RESET_ALL}")
+        MoonBot.print_(message=f"{Fore.WHITE}Probe: {Fore.MAGENTA}{probe}{Style.RESET_ALL}")
+        MoonBot.print_(message=f"{Fore.WHITE}ETH: {Fore.MAGENTA}{eth}{Style.RESET_ALL}")
         MoonBot.print_(
-            color=Fore.BLUE,
             message=(
-                f"{Fore.CYAN}Remaining time: {Fore.YELLOW}{hours} hours, {minutes} minutes, "
+                f"{Fore.WHITE}Remaining time: {Fore.YELLOW}{hours} hours, {minutes} minutes, "
                 f"and {seconds} seconds{Style.RESET_ALL}"
             )
         )
-
-        # Call bot methods instead of class methods
-        if remaining_time_ms == 0:
-            bot.claim_rewards()
-        elif probe > 0:
-            bot.explore_planets()
+        
+        config = MoonBot.load_config()
+        if config["farming"]:
+            MoonBot.print_(message=f"{Fore.GREEN}Farming: On")
+            if remaining_time_ms == 0:
+                bot.claim_rewards()
+        else:
+            MoonBot.print_(message=f"{Fore.GREEN}Farming: {Fore.RED}Off")
+        if config["planet"]:
+            MoonBot.print_(message=f"{Fore.GREEN}Explore Planet: On")
+            if probe > 0:
+                bot.explore_planets()
+        else:
+            MoonBot.print_(message=f"{Fore.GREEN}Explore Planet: {Fore.RED}Off")
 
     @staticmethod
     def convert_ms_to_time(ms):
@@ -448,9 +463,10 @@ def main():
     processor = AccountProcessor("query.txt")
     while True:
         processor.process_all_accounts()
-        MoonBot.print_(color=Fore.YELLOW,message="====== All accounts processed ======")
-        MoonBot.print_(color=Fore.CYAN,message="Waiting 10 minutes before re-processing...")
-        time.sleep(600)
+        MoonBot.print_(message=f"{Fore.WHITE}------------------------------------------------------\n")
+        config = MoonBot.load_config()
+        MoonBot.print_(message=f"{Fore.YELLOW}Waiting {config["delay_iteration"]} Seconds before re-processing...")
+        time.sleep(config["delay_iteration"])
 
 
 if __name__ == "__main__":

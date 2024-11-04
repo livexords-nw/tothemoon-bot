@@ -1,0 +1,9 @@
+{
+    "farming": true,
+    "planet": true,
+    "reff": true,
+    "achievements": true,
+    "tasks": true,
+    "delay_change_account": 30,
+    "delay_iteration": 600
+}
