@@ -290,7 +290,9 @@ class MoonBot:
             response_claim.raise_for_status()
             
             if response_claim.status_code == 200:
+
                 MoonBot.print_(message=f"{Fore.GREEN}{task_name}{Fore.YELLOW} | Amount: {Fore.MAGENTA}{task_amount}{Fore.YELLOW} | Award: {Fore.GREEN}{task_award}")
+
                 return True
 
         except requests.exceptions.RequestException as e:
