@@ -13,7 +13,7 @@ Register : https://t.me/PoPPtothemoon_bot/moon?startapp=7795589971
 
 ## Setingan untuk config.json
 |Fungsi|Deskripsi|Status|
-|:-----:|:------:|:-----:|
+|:-----|:------|:-----|
 |`farming`|Auto claim farming|Default True|
 |`planet`|Auto Explore planet|Default True|
 |`reff`|Auto claim reff|Default True|
