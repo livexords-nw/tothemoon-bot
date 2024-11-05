@@ -145,6 +145,7 @@ class MoonBot:
                                 MoonBot.print_(
                                     message=f"{Fore.RED}Exploration request for planet {planet_id} failed with status code {explorer_response.status_code}: {explorer_response.text}"
                                 )
+                                time.sleep(5)
                     else:
                         MoonBot.print_(
                             message=f"{Fore.RED}Planet request failed with status code {planets_response.status_code}: {planets_response.text}"
@@ -194,6 +195,7 @@ class MoonBot:
                         extract_and_send_names(item)
 
             def send_achievement_request(achievement_name, award_amount, award_name):
+                time.sleep(5)
                 try:
                     check_url = f"https://moon.popp.club/moon/achievement/check?achievementName={achievement_name}"
                     check_response = requests.get(check_url, headers=headers)
@@ -407,6 +409,7 @@ class AccountProcessor:
             award_name = task.get("award")
             award_amount = task.get("amount")
             bot.complete_task(task_id,name,award_amount,award_name)
+            time.sleep(5)
     
     def claim_reff(self, bot):
         """Claim reff point"""

@@ -4,12 +4,10 @@
 Register : https://t.me/PoPPtothemoon_bot/moon?startapp=7795589971
 
 ## Versi
-   Versi saat ini `v1.2.6`
+   Versi saat ini `v1.2.7`
 
-## Update `1.0.5` -> `1.2.6`
-   1. Menambahkan fitur auto claim reff
-   2. Menambahkan setingan `config.json`
-   3. Membenahi beberapa tampilan dan urutan farming
+## Update `1.2.6` -> `1.2.7`
+   1. Membenahi Beberapa request yang terlalu cepat
 
 ## Setingan untuk config.json
 |Fungsi|Deskripsi|Status|
