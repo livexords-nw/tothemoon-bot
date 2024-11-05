@@ -273,7 +273,6 @@ class MoonBot:
         try:
             response_task = requests.post(task_url, headers=headers, json=payload)
             response_task.raise_for_status()
-            MoonBot.print_(message=f"{Fore.GREEN}{Fore.WHITE}{task_name}{Fore.YELLOW}")
             return True
 
         except requests.exceptions.RequestException as e:
@@ -378,7 +377,7 @@ class AccountProcessor:
             return
         
         MoonBot.print_(message=f"{Fore.WHITE}------------------------------------------------------")
-        MoonBot.print_(message=f"{Fore.YELLOW} Sleep for {config["delay_change_account"]}")
+        MoonBot.print_(message=f"{Fore.YELLOW} Sleep for {config["delay_change_account"]} Second")
         time.sleep(config["delay_change_account"])  
 
     def claim_rewards(self, bot):
