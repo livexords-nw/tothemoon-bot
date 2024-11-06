@@ -4,10 +4,10 @@
 Register : https://t.me/PoPPtothemoon_bot/moon?startapp=7795589971
 
 ## Versi
-   Versi saat ini `v1.2.7`
+   Versi saat ini `v1.2.8`
 
-## Update `1.2.6` -> `1.2.7`
-   1. Membenahi Beberapa request yang terlalu cepat
+## Update `1.2.7` -> `1.2.8`
+   1. Membenahi handler login `Token Expired`
 
 ## Setingan untuk config.json
 |Fungsi|Deskripsi|Status|

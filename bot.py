@@ -61,7 +61,11 @@ class MoonBot:
         payload = {"initData": self.init_data, "initDataUnSafe": self.user_data}
         response = requests.post(login_url, headers=self.common_headers, json=payload)
         if response.status_code == 200:
-            self.token = response.json().get("data", {}).get("token", None)
+            data = response.json().get("data", None)
+            if data is None:
+                MoonBot.print_(f"{Fore.RED}Token Expired")
+                return None
+            self.token = data.get("token", None)
         return self.token
 
     def check_in(self):
