@@ -49,3 +49,7 @@ Register : https://t.me/PoPPtothemoon_bot/moon?startapp=7795589971
 - Auto Daily Check-in
 - Multi Account
 - Loop based on the account with the fastest claim time 
+
+## Contribution
+This bot created by livexords
+Telgram: t.me/livexordsscript

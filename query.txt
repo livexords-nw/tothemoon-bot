@@ -1,1 +1,0 @@
-query_id=AAFsfiREAgAAAGx-JER1MS1l&user=%7B%22id%22%3A5438209644%2C%22first_name%22%3A%22H%F0%9F%8D%85%F0%9F%9A%80PoPP%22%2C%22last_name%22%3A%22%22%2C%22username%22%3A%22Muhammad0Habib%22%2C%22language_code%22%3A%22id%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1730817975&hash=525a3c1ca2ccb76b003d42c6e76e42c7da6cd1880028bfa321b7148b08f3d39b

@@ -12,7 +12,8 @@ class Display:
 
     @staticmethod
     def welcome_message():
-        print("             This bot created by LIVEXORDS\n")
+        print("             This bot created by LIVEXORDS")
+        print("             Telegram: t.me/livexordsscript\n")
 
 
 class MoonBot:
