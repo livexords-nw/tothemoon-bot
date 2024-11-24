@@ -5,5 +5,5 @@
     "achievements": true,
     "tasks": true,
     "delay_change_account": 30,
-    "delay_iteration": 600
+    "delay_iteration": 60
 }
