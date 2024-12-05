@@ -1,4 +1,4 @@
-<h1 align="center">🌙 POP To The Moon Bot</h1>
+<h1 align="center">To The Moon Bot</h1>
 
 ###
 
@@ -88,7 +88,7 @@
    ```
 
 4. **Konfigurasi Query**  
-   Masukkan query POP To The Moon Anda ke dalam file `query.txt`.
+   Masukkan query To The Moon Anda ke dalam file `query.txt`.
 
 5. **Jalankan Bot**  
    Eksekusi bot dengan perintah:
