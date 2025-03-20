@@ -1,9 +1,11 @@
 {
+    "daily": true,
+    "task": true,
+    "achievement": true,
     "farming": true,
     "planet": true,
-    "reff": true,
-    "achievements": true,
-    "tasks": true,
-    "delay_change_account": 30,
-    "delay_iteration": 60
+    "thread": 1,
+    "proxy": false,
+    "delay_account_switch": 10,
+    "delay_loop": 3000
 }
